@@ -1,5 +1,7 @@
 package fcm.config;
 
+import fcm.model.converter.LocalDateConverter;
+import fcm.model.converter.LocalDateTimeConverter;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +12,8 @@ import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitPostProcessor;
 import org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter;
 
 import javax.persistence.EntityManagerFactory;
@@ -90,6 +94,10 @@ public class JpaConfig {
         localContainerEntityManagerFactoryBean.setPackagesToScan("fcm.model");
         localContainerEntityManagerFactoryBean.setLoadTimeWeaver(loadTimeWeaver());
         localContainerEntityManagerFactoryBean.getJpaPropertyMap().put("eclipselink.weaving", "false");
+        localContainerEntityManagerFactoryBean.setPersistenceUnitPostProcessors(pui -> {
+            pui.addManagedClassName(LocalDateConverter.class.getName());
+            pui.addManagedClassName(LocalDateTimeConverter.class.getName());
+        });
         return localContainerEntityManagerFactoryBean;
     }
 
