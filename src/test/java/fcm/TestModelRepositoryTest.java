@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.springframework.data.domain.Sort.*;
 
 public class TestModelRepositoryTest extends AbstractBaseTest {
 
@@ -41,8 +42,8 @@ public class TestModelRepositoryTest extends AbstractBaseTest {
             model.setLocalDateTime(LocalDateTime.now().minusHours(number).plusMinutes(random.nextInt(10)));
             repository.save(model);
         });
-        final List<TestModel> models = repository.findAll(new Sort(new Sort.Order(Sort.Direction.ASC, "localDate")));
-        final ArrayList<TestModel> sortedModels = new ArrayList<>(models);
+        final List<TestModel> models = repository.findAll(new Sort(new Order(Direction.ASC, "localDate")));
+        final List<TestModel> sortedModels = new ArrayList<>(models);
         Collections.sort(sortedModels, Comparator.comparing(TestModel::getLocalDate));
         assertThat(models, equalTo(sortedModels));
     }
